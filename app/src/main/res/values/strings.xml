@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Test</string>
+    <string name="addBtnTxt">ADD CONTACT</string>
+    <string name="confirmBtnTxt">CONFIRM</string>
+    <string name="inputNameTxt">Name</string>
+    <string name="inputPhoneTxt">Phone Number</string>
+    <string name="inputEmailTxt">Email</string>
+
+</resources>
