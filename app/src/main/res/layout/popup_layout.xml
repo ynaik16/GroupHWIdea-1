@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/call"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp" />
 
 
     <ImageButton
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/email"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"/>
 </LinearLayout>
 
 

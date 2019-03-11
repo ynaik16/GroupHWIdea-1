@@ -1,22 +1,28 @@
 package com.example.test;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity  {
+    //Components
     Button btnAddContact;
     ListView lvContacts;
     ArrayList<ContactInfo> list;
@@ -35,16 +41,15 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /* Incomplete/ Test variables */
         btnTest = findViewById(R.id.imageButton);
+        final Dialog  MyDialog = new Dialog(this);
 
-        //references to the components on the app
+        /* References to the components on the app */
         btnAddContact = findViewById(R.id.btnXMLAddContact);
         lvContacts = findViewById(R.id.lvContacts);
 
-        //make lvContacts an onClickListener
-
-
-        //holds ContactInfo (name,phone, email)
+        /* Holds ContactInfo (name,phone, email) */
         list = new ArrayList<ContactInfo>();
 
         //Called when the 'Add Contact' button is clicked/tapped
@@ -57,16 +62,40 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
+        //Called when a contact is clicked
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 /* TODO * When we click the item in the list view we open a popup window asking
                  * TODO * you want to call or email the selected person */
-                Toast.makeText(MainActivity.this,"You clicked position " + i , Toast.LENGTH_LONG).show();
+
+                /* In words saying 'in the list of contacts, get the array position(i), and return whatever
+                * Basically want o use these to pass into an Intent*/
+                String conName = list.get(i).getName();
+                final String conPhone = list.get(i).getPhone();
+                final String conEmail = list.get(i).getEmail();
+
+                /* Find the button from that popup_layout.xml */
+                ImageButton conBtnPhone = MyDialog.findViewById(R.id.btnPopupCall);
+                ImageButton conBtnEmail = MyDialog.findViewById(R.id.btnPopupEmail);
+
+                MyDialog.setContentView(R.layout.popup_layout);
+
+                /* TODO Set an onClickListener from the popup buttons to do something*/
+                /*conBtnPhone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        CURRENTLY NOT WORKING???
+                    }
+                });*/
+
+                MyDialog.show();
+
+                Toast.makeText(MainActivity.this,"You clicked on: " + conName , Toast.LENGTH_LONG).show();
             }
         });
 
-        //button to open app given through the pass string
+        //Button to open app given through the pass string
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,9 +110,10 @@ public class MainActivity extends AppCompatActivity  {
         });
     }
 
+
     //Called when you successfully return from your Intent/startActivity
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+       protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         //If you used the requestCode and successfully returned
