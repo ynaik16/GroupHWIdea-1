@@ -5,16 +5,18 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
     Button btnAddContact;
     ListView lvContacts;
     ArrayList<ContactInfo> list;
@@ -39,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
         btnAddContact = findViewById(R.id.btnXMLAddContact);
         lvContacts = findViewById(R.id.lvContacts);
 
+        //make lvContacts an onClickListener
+
+
         //holds ContactInfo (name,phone, email)
         list = new ArrayList<ContactInfo>();
 
@@ -49,6 +54,15 @@ public class MainActivity extends AppCompatActivity {
                 //Intent when you set up to go to a new activity
                 Intent toAddContact = new Intent(MainActivity.this, AddContact.class);
                 startActivityForResult(toAddContact, ADD_CONTACT);
+            }
+        });
+
+        lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                /* TODO * When we click the item in the list view we open a popup window asking
+                 * TODO * you want to call or email the selected person */
+                Toast.makeText(MainActivity.this,"You clicked position " + i , Toast.LENGTH_LONG).show();
             }
         });
 
