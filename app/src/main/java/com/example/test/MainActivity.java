@@ -75,20 +75,32 @@ public class MainActivity extends AppCompatActivity  {
                 final String conPhone = list.get(i).getPhone();
                 final String conEmail = list.get(i).getEmail();
 
+                /* Make sure you set the view before you find the buttons */
+                MyDialog.setContentView(R.layout.popup_layout);
+
                 /* Find the button from that popup_layout.xml */
                 ImageButton conBtnPhone = MyDialog.findViewById(R.id.btnPopupCall);
                 ImageButton conBtnEmail = MyDialog.findViewById(R.id.btnPopupEmail);
 
-                MyDialog.setContentView(R.layout.popup_layout);
 
-                /* TODO Set an onClickListener from the popup buttons to do something*/
-                /*conBtnPhone.setOnClickListener(new View.OnClickListener() {
+                conBtnPhone.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        CURRENTLY NOT WORKING???
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("tel:" + conPhone));
+                        startActivity(intent);
                     }
-                });*/
+                });
 
+                conBtnEmail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //start an intent to send an email
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("mailto:" + conEmail));
+                        startActivity(intent);
+                    }
+                });
                 MyDialog.show();
 
                 Toast.makeText(MainActivity.this,"You clicked on: " + conName , Toast.LENGTH_LONG).show();
@@ -99,9 +111,9 @@ public class MainActivity extends AppCompatActivity  {
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String pass = "tel:5104984470";
+                String pass = "tel:5104984470";
                 //String pass = "https://google.com
-                String pass = "geo:50.123,7.1434?z=19";
+                //String pass = "geo:50.123,7.1434?z=19";
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(pass));
@@ -109,7 +121,6 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
     }
-
 
     //Called when you successfully return from your Intent/startActivity
     @Override
@@ -137,6 +148,4 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
     }
-
-
 }
