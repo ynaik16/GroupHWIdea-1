@@ -2,14 +2,10 @@ package com.example.test;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -17,18 +13,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity  {
     //Components
+    public static final String SUPPORT = "Helpline Number: 1800 885 4390";
     Button btnAddContact;
     ListView lvContacts;
     ArrayList<ContactInfo> list;
-
-    //test button
-    ImageButton btnTest;
 
     //variables to hold values
     String name = "", phone = "", email = "";
@@ -42,7 +34,6 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
 
         /* Incomplete/ Test variables */
-        btnTest = findViewById(R.id.imageButton);
         final Dialog  MyDialog = new Dialog(this);
 
         /* References to the components on the app */
@@ -103,20 +94,15 @@ public class MainActivity extends AppCompatActivity  {
                 Toast.makeText(MainActivity.this,"You clicked on: " + conName , Toast.LENGTH_LONG).show();
             }
         });
+    }
 
-        //Button to open app given through the pass string
-        btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String pass = "tel:5555555555";
-                //String pass = "https://google.com
-                //String pass = "geo:50.123,7.1434?z=19";
+    public void toastMsg(String msg) {
+        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+        toast.show();
+    }
 
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(pass));
-                startActivity(intent);
-            }
-        });
+    public void displayToastMsg(View v){
+        toastMsg(SUPPORT);
     }
 
     //Called when you successfully return from your Intent/startActivity
