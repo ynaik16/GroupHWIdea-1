@@ -66,9 +66,6 @@ public class MainActivity extends AppCompatActivity  {
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                /* TODO * When we click the item in the list view we open a popup window asking
-                 * TODO * you want to call or email the selected person */
-
                 /* In words saying 'in the list of contacts, get the array position(i), and return whatever
                 * Basically want o use these to pass into an Intent*/
                 String conName = list.get(i).getName();
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity  {
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String pass = "tel:5104984470";
+                String pass = "tel:5555555555";
                 //String pass = "https://google.com
                 //String pass = "geo:50.123,7.1434?z=19";
 
