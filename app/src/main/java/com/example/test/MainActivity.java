@@ -2,14 +2,10 @@ package com.example.test;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -17,15 +13,15 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity  {
     //Components
+    public static final String SUPPORT = "Helpline Number: 1800 885 4390";
     Button btnAddContact;
     ListView lvContacts;
     ArrayList<ContactInfo> list;
+    ImageButton btnhelp;
 
     //test button
     ImageButton btnTest;
@@ -59,8 +55,12 @@ public class MainActivity extends AppCompatActivity  {
                 //Intent when you set up to go to a new activity
                 Intent toAddContact = new Intent(MainActivity.this, AddContact.class);
                 startActivityForResult(toAddContact, ADD_CONTACT);
+
             }
-        });
+
+                                         }
+
+        );
 
         //Called when a contact is clicked
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -120,6 +120,19 @@ public class MainActivity extends AppCompatActivity  {
                 startActivity(intent);
             }
         });
+
+
+    }
+
+    public void toastMsg(String msg) {
+        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    public void displayToastMsg(View v) {
+
+        toastMsg(SUPPORT);
+
     }
 
     //Called when you successfully return from your Intent/startActivity
