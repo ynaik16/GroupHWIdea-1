@@ -11,7 +11,6 @@ the meaning for the code.
 <br> 
 
 * Things to work on:
-    * Actually saving the user info
     * Better UI (text should scale inside the ListView element)
     * Features!! (Who are my customers?)
     * More TBA
