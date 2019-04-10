@@ -12,7 +12,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -22,12 +25,13 @@ public class MainActivity extends AppCompatActivity  {
     ListView lvContacts;
     ArrayList<ContactInfo> list;
     DatabaseHelper myDb;
+    TextView contactsCount;
 
 
     //variables to hold values
     public static final String SUPPORT = "Helpline Number: 1800 885 4390";
     String name = "", phone = "", email = "";
-    int itemID;
+    int itemID, contactCounter;
 
     //code to use when using startActivity()
     final int ADD_CONTACT = 1;
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity  {
         /* References to the components on the app */
         btnAddContact = findViewById(R.id.btnXMLAddContact);
         lvContacts = findViewById(R.id.lvContacts);
+        contactsCount = findViewById(R.id.textView);
 
         /* Holds ContactInfo (name,phone, email) */
         list = new ArrayList<ContactInfo>();
@@ -65,6 +70,8 @@ public class MainActivity extends AppCompatActivity  {
                 lvContacts.setAdapter(adapter);
             }
         }
+        contactCounter = data.getCount();
+        contactsCount.setText("Contacts " + contactCounter);
 
         //Called when the 'Add Contact' button is clicked/tapped
         btnAddContact.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +142,7 @@ public class MainActivity extends AppCompatActivity  {
                         overridePendingTransition(0, 0);
                         startActivity(getIntent());
                         overridePendingTransition(0, 0);
+                        setContactCount(-1);
                     }
                 });
                 MyDialog.show();
@@ -178,6 +186,7 @@ public class MainActivity extends AppCompatActivity  {
 
                 //calls the getView
                 lvContacts.setAdapter(adapter);
+                setContactCount(1);
             }
         }
     }
@@ -188,5 +197,10 @@ public class MainActivity extends AppCompatActivity  {
 
         if (insertData == false)
             Toast.makeText(MainActivity.this,"Failed to enter data to database" , Toast.LENGTH_LONG).show();
+    }
+
+    public void setContactCount(int num) {
+        contactCounter += num;
+        contactsCount.setText("Contacts " + contactCounter);
     }
 }
