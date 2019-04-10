@@ -18,14 +18,16 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity  {
     //Components
-    public static final String SUPPORT = "Helpline Number: 1800 885 4390";
     Button btnAddContact;
     ListView lvContacts;
     ArrayList<ContactInfo> list;
     DatabaseHelper myDb;
 
+
     //variables to hold values
+    public static final String SUPPORT = "Helpline Number: 1800 885 4390";
     String name = "", phone = "", email = "";
+    int itemID;
 
     //code to use when using startActivity()
     final int ADD_CONTACT = 1;
@@ -64,7 +66,6 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
 
-
         //Called when the 'Add Contact' button is clicked/tapped
         btnAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity  {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 /* In words saying 'in the list of contacts, get the array position(i), and return whatever
                  * Basically want o use these to pass into an Intent*/
-                String conName = list.get(i).getName();
+                final String conName = list.get(i).getName();
                 final String conPhone = list.get(i).getPhone();
                 final String conEmail = list.get(i).getEmail();
 
@@ -91,17 +92,28 @@ public class MainActivity extends AppCompatActivity  {
                 /* Find the button from that popup_layout.xml */
                 ImageButton conBtnPhone = MyDialog.findViewById(R.id.btnPopupCall);
                 ImageButton conBtnEmail = MyDialog.findViewById(R.id.btnPopupEmail);
+                Button conBtnDelete = MyDialog.findViewById(R.id.btnPopupDelete);
 
+                //We check email because emails are generally unique
+                Cursor data = myDb.getItemID(conEmail);
+                itemID = -1; // ID will be -1 by default
+                while (data.moveToNext()){
+                    itemID = data.getInt(0);
+                }
+                if (itemID < 0){
+                    toastMsg("No ID associated");
+                }
 
+                // Call button listener
                 conBtnPhone.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse("tel:" + conPhone));
                         startActivity(intent);
                     }
                 });
 
+                // Email button listener
                 conBtnEmail.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -111,13 +123,26 @@ public class MainActivity extends AppCompatActivity  {
                         startActivity(intent);
                     }
                 });
-                MyDialog.show();
 
-                Toast.makeText(MainActivity.this,"You clicked on: " + conName , Toast.LENGTH_LONG).show();
+                // Delete button listener
+                conBtnDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view){
+                        myDb.deleteItem(itemID,conName,conPhone,conEmail);
+
+                        //this acts like a refresh to the view, may have to change with addition of login
+                        finish();
+                        overridePendingTransition(0, 0);
+                        startActivity(getIntent());
+                        overridePendingTransition(0, 0);
+                    }
+                });
+                MyDialog.show();
             }
         });
     }
 
+    // Easier toast
     public void toastMsg(String msg) {
         Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
         toast.show();
@@ -157,6 +182,7 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
+    // enters item into the database
     public void AddData(String item1, String item2, String item3){
         boolean insertData = myDb.addData(item1,item2,item3);
 
