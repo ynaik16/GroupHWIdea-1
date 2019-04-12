@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,18 +16,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity  {
     //Components
+    private GoogleSignInClient mGoogleSignInClient;
     Button btnAddContact;
     ListView lvContacts;
     ArrayList<ContactInfo> list;
     DatabaseHelper myDb;
     TextView contactsCount;
-
+    Button btnSignOut;
 
     //variables to hold values
     public static final String SUPPORT = "Helpline Number: 1800 885 4390";
@@ -46,6 +52,7 @@ public class MainActivity extends AppCompatActivity  {
 
         /* References to the components on the app */
         btnAddContact = findViewById(R.id.btnXMLAddContact);
+        btnSignOut = findViewById(R.id.btnXMLSignOut);
         lvContacts = findViewById(R.id.lvContacts);
         contactsCount = findViewById(R.id.textView);
 
@@ -55,6 +62,13 @@ public class MainActivity extends AppCompatActivity  {
         /* Use Database to load in on the initialization of app */
         myDb = new DatabaseHelper(this);
         Cursor data = myDb.getListContents();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
 
         if(data.getCount() > 0) {
             while(data.moveToNext()) {
@@ -80,6 +94,13 @@ public class MainActivity extends AppCompatActivity  {
                 //Intent when you set up to go to a new activity
                 Intent toAddContact = new Intent(MainActivity.this, AddContact.class);
                 startActivityForResult(toAddContact, ADD_CONTACT);
+            }
+        });
+
+        btnSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signOut();
             }
         });
 
@@ -199,8 +220,20 @@ public class MainActivity extends AppCompatActivity  {
             Toast.makeText(MainActivity.this,"Failed to enter data to database" , Toast.LENGTH_LONG).show();
     }
 
+    //set the text view to show how many contacts
     public void setContactCount(int num) {
         contactCounter += num;
         contactsCount.setText("Contacts " + contactCounter);
+    }
+
+    //handle sign out
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        finish();   //finish will exit to the sign in screen
+                    }
+                });
     }
 }
