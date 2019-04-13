@@ -4,33 +4,109 @@
     android:layout_width="350dp"
     android:layout_height="475dp"
     android:layout_gravity="center"
-    android:background="@color/colorLight"
+    android:background="@color/colorBlack"
     android:orientation="vertical"
     android:padding="5dp">
 
-    <ImageButton
-        android:id="@+id/btnPopupCall"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        app:srcCompat="@drawable/call" />
+        android:orientation="vertical"
+        android:background="@color/colorBlack">
 
+        <TextView
+            android:id="@+id/tvPopupName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contact Name"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp" />
 
-    <ImageButton
-        android:id="@+id/btnPopupEmail"
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="173dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/default_image" />
+
+        <TextView
+            android:id="@+id/tvPopupNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone Number"
+            android:textColor="@color/colorWhite"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvPopupAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email Address"
+            android:textColor="@color/colorWhite"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        app:srcCompat="@drawable/email" />
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center">
 
-    <Button
-        android:id="@+id/btnPopupDelete"
-        android:layout_width="338dp"
+        <ImageButton
+            android:id="@+id/btnPopupCall"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/call" />
+
+        <ImageButton
+            android:id="@+id/btnPopupEmail"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/email" />
+
+        <ImageButton
+            android:id="@+id/btnPopupLocation"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/location"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Delete" />
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnPopupDelete"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:background="@color/colorRed"/>
+
+        <Button
+            android:id="@+id/btnPopupEdit"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:text="Edit" />
+    </LinearLayout>
+
 
 </LinearLayout>
-
-

@@ -32,15 +32,8 @@ public class ContactAdapter extends ArrayAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View myView = inflater.inflate(R.layout.custom_layout, parent, false);
-
         TextView tvContactName = myView.findViewById(R.id.tvContactName);
-        TextView tvContactPhone = myView.findViewById(R.id.tvContactPhone);
-        TextView tvContactEmail = myView.findViewById(R.id.tvContactEmail);
-
         tvContactName.setText(values.get(position).getName());
-        tvContactPhone.setText(values.get(position).getPhone());
-        tvContactEmail.setText((values.get(position).getEmail()));
-
         return myView;
     }
 }

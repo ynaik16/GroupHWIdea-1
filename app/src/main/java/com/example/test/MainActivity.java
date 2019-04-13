@@ -117,10 +117,19 @@ public class MainActivity extends AppCompatActivity  {
                 /* Make sure you set the view before you find the buttons */
                 MyDialog.setContentView(R.layout.popup_layout);
 
-                /* Find the button from that popup_layout.xml */
+                /* Setup the buttons and textviews in the popup */
+                TextView contvName = MyDialog.findViewById(R.id.tvPopupName);
+                TextView contvPhone = MyDialog.findViewById(R.id.tvPopupNumber);
+                TextView contvEmail = MyDialog.findViewById(R.id.tvPopupAddress);
                 ImageButton conBtnPhone = MyDialog.findViewById(R.id.btnPopupCall);
                 ImageButton conBtnEmail = MyDialog.findViewById(R.id.btnPopupEmail);
                 Button conBtnDelete = MyDialog.findViewById(R.id.btnPopupDelete);
+
+
+                /* Set the textview to the selected users info */
+                contvName.setText(conName);
+                contvPhone.setText(conPhone);
+                contvEmail.setText(conEmail);
 
                 //We check email because emails are generally unique
                 Cursor data = myDb.getItemID(conEmail);
@@ -137,6 +146,7 @@ public class MainActivity extends AppCompatActivity  {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("tel:" +conPhone));
                         startActivity(intent);
                     }
                 });
