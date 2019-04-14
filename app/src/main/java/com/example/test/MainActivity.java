@@ -36,18 +36,23 @@ public class MainActivity extends AppCompatActivity  {
 
     //variables to hold values
     public static final String SUPPORT = "Helpline Number: 1800 885 4390";
-    String name = "", phone = "", email = "";
+    String name = "", phone = "", email = "", address = "";
     int itemID, contactCounter;
 
-    //code to use when using startActivity()
+    //code to use when using startActivityForResult()
     final int ADD_CONTACT = 1;
+    final int EDIT_CONTACT = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /* Incomplete/ Test variables */
+        /* **************************************************************** */
+        /* ***************************** SET UP  ************************** */
+        /* **************************************************************** */
+
+        /* For the popup when clicking a listView item(contact) */
         final Dialog MyDialog = new Dialog(this);
 
         /* References to the components on the app */
@@ -63,20 +68,25 @@ public class MainActivity extends AppCompatActivity  {
         myDb = new DatabaseHelper(this);
         Cursor data = myDb.getListContents();
 
+        /* Google Sign In stuff */
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-
+        /* ********************************************** */
+        /* ***************** LOAD DATA  ***************** */
+        /* ********************************************** */
         if(data.getCount() > 0) {
             while(data.moveToNext()) {
+
                 //get the string in each column and add it in a new ContactInfo person
                 String dataName = data.getString(1);
                 String dataPhone = data.getString(2);
                 String dataEmail = data.getString(3);
-                ContactInfo person = new ContactInfo(dataName,dataPhone,dataEmail);
+                String dataAddress = data.getString(4);
+                ContactInfo person = new ContactInfo(dataName,dataPhone,dataEmail,dataAddress);
 
                 //add it to the list
                 list.add(person);
@@ -84,10 +94,15 @@ public class MainActivity extends AppCompatActivity  {
                 lvContacts.setAdapter(adapter);
             }
         }
+        /* Will add a counter to how many contacts there are */
         contactCounter = data.getCount();
         contactsCount.setText("Contacts " + contactCounter);
 
-        //Called when the 'Add Contact' button is clicked/tapped
+        /* ****************************************** */
+        /* ***************** BUTTONS  *************** */
+        /* ****************************************** */
+
+        /* Add Contact */
         btnAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,6 +112,7 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
+        /* Sign Out */
         btnSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,7 +120,11 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
-        //Called when a contact is clicked
+        /* ******************** */
+        /* *** POPUP WINDOW *** */
+        /* ******************** */
+
+        /* Tap/Click a contact in the listView */
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -113,6 +133,7 @@ public class MainActivity extends AppCompatActivity  {
                 final String conName = list.get(i).getName();
                 final String conPhone = list.get(i).getPhone();
                 final String conEmail = list.get(i).getEmail();
+                final String conAddress = list.get(i).getAddress();
 
                 /* Make sure you set the view before you find the buttons */
                 MyDialog.setContentView(R.layout.popup_layout);
@@ -123,7 +144,9 @@ public class MainActivity extends AppCompatActivity  {
                 TextView contvEmail = MyDialog.findViewById(R.id.tvPopupAddress);
                 ImageButton conBtnPhone = MyDialog.findViewById(R.id.btnPopupCall);
                 ImageButton conBtnEmail = MyDialog.findViewById(R.id.btnPopupEmail);
+                ImageButton conBtnGeo = MyDialog.findViewById(R.id.btnPopupLocation);
                 Button conBtnDelete = MyDialog.findViewById(R.id.btnPopupDelete);
+                Button conBtnEdit = MyDialog.findViewById(R.id.btnPopupEdit);
 
 
                 /* Set the textview to the selected users info */
@@ -131,7 +154,8 @@ public class MainActivity extends AppCompatActivity  {
                 contvPhone.setText(conPhone);
                 contvEmail.setText(conEmail);
 
-                //We check email because emails are generally unique
+                /* Will grab the database ID for the item you clicked */
+                /* Use Email because the email is the most unique field */
                 Cursor data = myDb.getItemID(conEmail);
                 itemID = -1; // ID will be -1 by default
                 while (data.moveToNext()){
@@ -141,7 +165,7 @@ public class MainActivity extends AppCompatActivity  {
                     toastMsg("No ID associated");
                 }
 
-                // Call button listener
+                /* Popup Call Button */
                 conBtnPhone.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -151,7 +175,7 @@ public class MainActivity extends AppCompatActivity  {
                     }
                 });
 
-                // Email button listener
+                /* Popup Email Button */
                 conBtnEmail.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -162,36 +186,48 @@ public class MainActivity extends AppCompatActivity  {
                     }
                 });
 
-                // Delete button listener
+                /* Popup Geo Button */
+                conBtnGeo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // TODO change to contacts address
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("geo:0,0?q=" + conAddress.replaceAll("\\s+","+")));
+                        startActivity(intent);
+                    }
+                });
+
+                /* Popup Delete Button */
                 conBtnDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view){
-                        myDb.deleteItem(itemID,conName,conPhone,conEmail);
-
-                        //this acts like a refresh to the view, may have to change with addition of login
-                        finish();
-                        overridePendingTransition(0, 0);
-                        startActivity(getIntent());
-                        overridePendingTransition(0, 0);
+                        myDb.deleteItem(itemID,conName,conPhone,conEmail,conAddress);
+                        refresh();
                         setContactCount(-1);
                     }
                 });
+
+                /* Popup Edit Button */
+                conBtnEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent editIntent = new Intent(MainActivity.this,AddContact.class);
+                        editIntent.putExtra("id",itemID);
+                        editIntent.putExtra("name",conName);
+                        editIntent.putExtra("phone",conPhone);
+                        editIntent.putExtra("email",conEmail);
+                        editIntent.putExtra("address",conAddress);
+                        startActivityForResult(editIntent, EDIT_CONTACT);
+                    }
+                });
+
+                /* Show the popup */
                 MyDialog.show();
             }
         });
     }
 
-    // Easier toast
-    public void toastMsg(String msg) {
-        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
-        toast.show();
-    }
-
-    public void displayToastMsg(View v){
-        toastMsg(SUPPORT);
-    }
-
-    //Called when you successfully return from your Intent/startActivity
+    /* Called when returning from a startActivityForResult */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -203,13 +239,14 @@ public class MainActivity extends AppCompatActivity  {
                 name = data.getStringExtra("name");
                 phone = data.getStringExtra("phone");
                 email = data.getStringExtra("email");
+                address = data.getStringExtra("address");
 
                 //create a new ContactInfo with all these attributes and add to the list
-                ContactInfo newContact = new ContactInfo(name,phone,email);
+                ContactInfo newContact = new ContactInfo(name,phone,email,address);
                 list.add(newContact);
 
                 //for database
-                AddData(name,phone,email);
+                AddData(name,phone,email,address);
 
                 //Create an adapter to speak to the ListView
                 //Pass context of this page and the list populated with returned Intent data
@@ -220,23 +257,53 @@ public class MainActivity extends AppCompatActivity  {
                 setContactCount(1);
             }
         }
+
+        //If we returned using the requestCode to edit
+        else if (requestCode == EDIT_CONTACT) {
+            if (resultCode == RESULT_OK) {
+                refresh();
+            }
+        }
     }
 
-    // enters item into the database
-    public void AddData(String item1, String item2, String item3){
-        boolean insertData = myDb.addData(item1,item2,item3);
+    /* **************************************************************** */
+    /* **************************** UTILITY  ************************** */
+    /* **************************************************************** */
+
+    /* Make a Toast Message appear*/
+    public void toastMsg(String msg) {
+        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    /* Used when clicking the caution button at the top of the main layout */
+    public void displayToastMsg(View v){
+        toastMsg(SUPPORT);
+    }
+
+    /* Will Refresh the layout */
+    public void refresh() {
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
+    }
+
+    /* Add Data using the Database*/
+    public void AddData(String item1, String item2, String item3,String item4){
+        boolean insertData = myDb.addData(item1,item2,item3,item4);
 
         if (insertData == false)
             Toast.makeText(MainActivity.this,"Failed to enter data to database" , Toast.LENGTH_LONG).show();
     }
 
-    //set the text view to show how many contacts
+    /* Set the count (only pass 1 or -1) */
     public void setContactCount(int num) {
         contactCounter += num;
         contactsCount.setText("Contacts " + contactCounter);
     }
 
-    //handle sign out
+    /* Sign Out Handler*/
     private void signOut() {
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {

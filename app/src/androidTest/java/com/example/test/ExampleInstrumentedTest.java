@@ -79,6 +79,7 @@ public class ExampleInstrumentedTest extends AndroidJUnitRunner {
         onView(withId(R.id.editTextName)).perform(typeText("TestGuy"), closeSoftKeyboard());
         onView(withId(R.id.editTextPhone)).perform(typeText("5555555555"), closeSoftKeyboard());
         onView(withId(R.id.editTextEmail)).perform(typeText("randomguy@email.com"), closeSoftKeyboard());
+        onView(withId(R.id.editTextAddress)).perform(typeText(" 25800 Carlos Bee Blvd Hayward"), closeSoftKeyboard());
         onView(withId(R.id.btnXMLConfirm)).perform(click());
     }
 }
